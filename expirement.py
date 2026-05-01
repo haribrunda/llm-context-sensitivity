@@ -153,6 +153,58 @@ hurt = df[(df["condition"] == "irrelevant") & (df["correct"] == False) & (df["qu
 hurt.to_csv("errors_hurt_by_irrelevant.csv", index=False)
 print(f"{len(hurt)} cases where irrelevant hurt")
 
+import matplotlib.pyplot as plt
+import numpy as np
+
+failure_modes = ['Answer Choice Shift', 'Topic Misdirection', 'Reasoning Chain\nDisruption']
+counts = [7, 3, 2]  # adjust these numbers based on your actual CSV categorization
+
+colors = ['#4C72B0', '#55A868', '#C44E52']
+plt.figure(figsize=(9, 5))
+bars = plt.bar(failure_modes, counts, color=colors, edgecolor='white', width=0.5)
+
+for bar, count in zip(bars, counts):
+    plt.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.1,
+             str(count), ha='center', va='bottom', fontweight='bold', fontsize=12)
+
+plt.title('Distribution of Failure Modes\nCaused by Irrelevant Context (n=12 cases)', fontsize=13)
+plt.xlabel('Failure Mode', fontsize=12)
+plt.ylabel('Number of Cases', fontsize=12)
+plt.ylim(0, 10)
+plt.tight_layout()
+plt.savefig('figure_failure_modes.png', dpi=200)
+plt.show()
+
+import matplotlib.pyplot as plt
+
+fig, axes = plt.subplots(1, 3, figsize=(14, 5))
+fig.suptitle('Three Prompt Conditions Used in Evaluation',
+             fontsize=14, fontweight='bold')
+
+conditions = ['Minimal Context', 'Relevant Context', 'Irrelevant Context']
+colors = ['#4C72B0', '#55A868', '#C44E52']
+examples = [
+    "Question:\nDarrell and Allen's ages\nare in ratio 7:11. Their\ntotal age is 162.\nWhat is Allen's age?\n\nAnswer with just\nthe final number:",
+    "Solve step by step.\n\nQuestion:\nDarrell and Allen's ages\nare in ratio 7:11. Their\ntotal age is 162.\nWhat is Allen's age?\n\nAnswer:",
+    "Context:\nThe Eiffel Tower was\ncompleted in 1889 and\nstands 330 meters tall.\n\nQuestion:\nDarrell and Allen's ages\nare in ratio 7:11. Their\ntotal age is 162.\nWhat is Allen's age?\n\nAnswer with just\nthe final number:"
+]
+
+for ax, title, color, text in zip(axes, conditions, colors, examples):
+    ax.set_facecolor('white')
+    ax.text(0.5, 0.95, title, transform=ax.transAxes,
+            fontsize=12, fontweight='bold', ha='center', va='top', color=color)
+    ax.text(0.5, 0.5, text, transform=ax.transAxes,
+            fontsize=9, ha='center', va='center',
+            bbox=dict(boxstyle='round,pad=0.8', facecolor='#f8f8f8',
+                     edgecolor=color, linewidth=2))
+    ax.set_xlim(0, 1)
+    ax.set_ylim(0, 1)
+    ax.axis('off')
+
+plt.tight_layout()
+plt.savefig('figure_prompt_conditions.png', dpi=200, bbox_inches='tight')
+plt.show()
+
 from google.colab import files
 files.download("results.csv")
 files.download("accuracy_summary.csv")
