@@ -1,0 +1,4 @@
+dataset,minimal,relevant,irrelevant
+CommonsenseQA,56.0,46.0,46.0
+GSM8K,4.0,46.0,4.0
+HotpotQA,10.0,22.0,10.0
